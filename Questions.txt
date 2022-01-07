@@ -210,3 +210,137 @@ SELECT WORKER_TITLE, AFFECTED_FROM, COUNT(*)
 FROM Title
 GROUP BY WORKER_TITLE, AFFECTED_FROM
 HAVING COUNT(*) > 1;
+
+
+Q-26. Write an SQL query to show only odd rows from a table.
+Ans.
+
+The required query is:
+
+SELECT * FROM Worker WHERE MOD (WORKER_ID, 2) <> 0;
+ 
+
+Q-27. Write an SQL query to show only even rows from a table.
+Ans.
+
+The required query is:
+
+SELECT * FROM Worker WHERE MOD (WORKER_ID, 2) = 0;
+
+
+Q-28. Write an SQL query to clone a new table from another table.
+Ans.
+
+The general query to clone a table with data is:
+
+SELECT * INTO WorkerClone FROM Worker;
+The general way to clone a table without information is:
+
+SELECT * INTO WorkerClone FROM Worker WHERE 1 = 0;
+An alternate way to clone a table (for MySQL) without is:
+
+CREATE TABLE WorkerClone LIKE Worker;
+ 
+
+Q-29. Write an SQL query to fetch intersecting records of two tables.
+Ans.
+
+The required query is:
+
+(SELECT * FROM Worker)
+INTERSECT
+(SELECT * FROM WorkerClone);
+ 
+
+Q-30. Write an SQL query to show records from one table that another table does not have.
+Ans.
+
+The required query is:
+
+SELECT * FROM Worker
+MINUS
+SELECT * FROM Title;
+ 
+
+Q-31. Write an SQL query to show the current date and time.
+Ans.
+
+Following MySQL query returns the current date:
+
+SELECT CURDATE();
+Following MySQL query returns the current date and time:
+
+SELECT NOW();
+Following SQL Server query returns the current date and time:
+
+SELECT getdate();
+Following Oracle query returns the current date and time:
+
+SELECT SYSDATE FROM DUAL;
+ 
+
+Q-32. Write an SQL query to show the top n (say 10) records of a table.
+Ans.
+
+Following MySQL query will return the top n records using the LIMIT method:
+
+SELECT * FROM Worker ORDER BY Salary DESC LIMIT 10;
+Following SQL Server query will return the top n records using the TOP command:
+
+SELECT TOP 10 * FROM Worker ORDER BY Salary DESC;
+Following Oracle query will return the top n records with the help of ROWNUM:
+
+SELECT * FROM (SELECT * FROM Worker ORDER BY Salary DESC)
+WHERE ROWNUM <= 10;
+ 
+
+Q-33. Write an SQL query to determine the nth (say n=5) highest salary from a table.
+Ans.
+
+The following MySQL query returns the nth highest salary:
+
+SELECT Salary FROM Worker ORDER BY Salary DESC LIMIT n-1,1;
+The following SQL Server query returns the nth highest salary:
+
+SELECT TOP 1 Salary
+FROM (
+ SELECT DISTINCT TOP n Salary
+ FROM Worker 
+ ORDER BY Salary DESC
+ )
+ORDER BY Salary ASC;
+ 
+
+Q-34. Write an SQL query to determine the 5th highest salary without using TOP or limit method.
+Ans.
+
+The following query is using the correlated subquery to return the 5th highest salary:
+
+SELECT Salary
+FROM Worker W1
+WHERE 4 = (
+ SELECT COUNT( DISTINCT ( W2.Salary ) )
+ FROM Worker W2
+ WHERE W2.Salary >= W1.Salary
+ );
+Use the following generic method to find nth highest salary without using TOP or limit.
+
+SELECT Salary
+FROM Worker W1
+WHERE n-1 = (
+ SELECT COUNT( DISTINCT ( W2.Salary ) )
+ FROM Worker W2
+ WHERE W2.Salary >= W1.Salary
+ );
+ 
+
+Q-35. Write an SQL query to fetch the list of employees with the same salary.
+Ans.
+
+The required query is:
+
+Select distinct W.WORKER_ID, W.FIRST_NAME, W.Salary 
+from Worker W, Worker W1 
+where W.Salary = W1.Salary 
+and W.WORKER_ID != W1.WORKER_ID;
+ 
